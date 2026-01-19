@@ -1,0 +1,26 @@
+# UI
+streamlit==1.28.1
+
+# LLM & Transformers
+transformers==4.36.2
+torch==2.0.1
+accelerate==0.25.0
+
+# Embeddings & RAG
+sentence-transformers==2.2.2
+faiss-cpu==1.7.4
+
+# PDF Processing
+pypdf==3.17.4
+
+# OCR
+pytesseract==0.3.10
+Pillow==10.1.0
+
+# Speech
+openai-whisper==20231117
+gTTS==2.5.1
+
+# Utilities
+numpy==1.24.4
+scipy==1.10.1
