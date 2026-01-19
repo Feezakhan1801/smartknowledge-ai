@@ -51,6 +51,7 @@ Authentication: Custom username/password system
 ├── requirements.txt
 └── README.md
 
+
 ⚙️ Installation & Setup
 # Clone the repository
 git clone https://github.com/your-username/smartknowledge-ai.git
