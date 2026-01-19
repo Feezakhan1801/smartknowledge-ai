@@ -54,7 +54,7 @@ Authentication: Custom username/password system
 
 ⚙️ Installation & Setup
 # Clone the repository
-git clone https://github.com/your-username/smartknowledge-ai.git
+git clone https://github.com/Feezakhan1801/smartknowledge-ai.git
 cd smartknowledge-ai
 
 # Create virtual environment
