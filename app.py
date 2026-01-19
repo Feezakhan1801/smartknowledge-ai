@@ -1,6 +1,9 @@
 import streamlit as st
 import tempfile
 import os
+import io
+import csv
+
 
 from llm import generate_answer
 from pdf_rag import load_pdf_text, split_text, create_faiss_index, get_pdf_answer
@@ -18,6 +21,72 @@ create_tables()  # Ensure tables exist
 st.set_page_config(page_title="SmartKnowledge AI", layout="wide")
 st.title("SmartKnowledge AI")
 st.caption("Multimodal AI Assistant")
+
+# ----------------- CUSTOM CSS (BACKGROUND + UI) -----------------
+st.markdown("""
+<style>
+/* Main background */
+.stApp {
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: white;
+}
+
+/* Sidebar glass effect */
+section[data-testid="stSidebar"] {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    border-right: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Headers */
+h1, h2, h3 {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Chat bubbles */
+[data-testid="stChatMessage"] {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 12px;
+    margin-bottom: 10px;
+}
+
+/* User message */
+[data-testid="stChatMessage"][aria-label="Chat message from user"] {
+    background: linear-gradient(135deg, #1d976c, #93f9b9);
+    color: black;
+}
+
+/* Assistant message */
+[data-testid="stChatMessage"][aria-label="Chat message from assistant"] {
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+}
+
+/* Input box */
+input, textarea {
+    background: rgba(255,255,255,0.1) !important;
+    color: white !important;
+    border-radius: 12px !important;
+}
+
+/* Buttons */
+button {
+    background: linear-gradient(135deg, #667eea, #764ba2) !important;
+    color: white !important;
+    border-radius: 12px !important;
+}
+
+/* File uploader */
+[data-testid="stFileUploader"] {
+    background: rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 10px;
+}
+</style>
+""", unsafe_allow_html=True)
+
 
 # ----------------- Session State -----------------
 if "logged_in" not in st.session_state:
@@ -77,6 +146,21 @@ with st.sidebar:
             st.markdown(f"**You:** {user_msg}")
             st.markdown(f"**Bot:** {bot_msg}")
             st.divider()
+     else:
+        st.info("No chat history yet.")
+
+    # Download chat history button
+    if st.session_state.chat_history:
+        history_text = ""
+        for user_msg, bot_msg in st.session_state.chat_history:
+            history_text += f"You: {user_msg}\nBot: {bot_msg}\n\n"
+        st.download_button(
+            label="Download Chat History",
+            data=history_text,
+            file_name=f"{st.session_state.username}_chat_history.txt",
+            mime="text/plain"
+        )
+
 
     st.subheader("PDF & Settings")
     pdf_file = st.file_uploader("Upload PDF", type=["pdf"])
@@ -149,3 +233,4 @@ if user_question:
     st.session_state.chat_history.append((user_question, answer))
     st.session_state.chat_history = st.session_state.chat_history[-20:]
     save_chat(st.session_state.username, user_question, answer)
+
